@@ -31,4 +31,8 @@ class Application extends Expression{
         this.lExp = lExp;
         this.rExp = rExp;
     }
+
+    public String toString() {
+        return "(" + lExp + " " + rExp + ")";
+    }
 }
