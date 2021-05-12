@@ -10,12 +10,17 @@ public class LambdaLab {
         String input = in.nextLine();
 
         while(!input.equals("exit")){
-            System.out.print(">");
-            input = in.nextLine();
             if (input.contains(";")){
                 input = input.substring(0, input.indexOf(";"));
             }
-            ArrayList<String> tokens = tokenize(input);
+            ArrayList<Expression> tokens = makeVars(tokenize(input));
+            while (tokens.size() > 1) {
+                tokens.set(0, new Application(tokens.get(0), tokens.get(1)));
+                tokens.remove(1);
+            }
+            System.out.println(tokens.get(0));
+            System.out.print(">");
+            input = in.nextLine();
         }
         System.out.println("Goodbye!");
     }
@@ -23,18 +28,27 @@ public class LambdaLab {
     public static ArrayList<String> tokenize(String input){
         char[] chars = input.toCharArray();
         ArrayList<String> ret = new ArrayList<>();
-        String varWord = "";
+        StringBuilder varWord = new StringBuilder();
         for (int i = 0; i < chars.length; i++){
             if (Arrays.asList('\\', '.', '(', ')', ' ').contains(chars[i])){
                 ret.add(Character.toString(chars[i]));
             }
             else{
-                while(!(Arrays.asList('\\', '.', '(', ')', ' ').contains(chars[i]))){
-                    varWord += chars[i];
+                while(i < chars.length && !(Arrays.asList('\\', '.', '(', ')', ' ').contains(chars[i]))){
+                    varWord.append(chars[i]);
                     i++;
                 }
             }
-            ret.add(varWord);
+            ret.add(varWord.toString());
+            varWord = new StringBuilder();
+        }
+        return ret;
+    }
+
+    public static ArrayList<Expression> makeVars (ArrayList<String> tokens){
+        ArrayList<Expression> ret = new ArrayList<>();
+        for (String token: tokens) {
+                ret.add(new Variable(token));
         }
         return ret;
     }
