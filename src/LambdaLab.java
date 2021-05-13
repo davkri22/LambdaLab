@@ -18,7 +18,8 @@ public class LambdaLab {
                 tokens.set(0, new Application(tokens.get(0), tokens.get(1)));
                 tokens.remove(1);
             }
-            System.out.println(tokens.get(0));
+            if (tokens.size() > 0)
+                System.out.println(tokens.get(0));
             System.out.print(">");
             input = in.nextLine();
         }
@@ -32,17 +33,17 @@ public class LambdaLab {
             tokens.add(Character.toString(c));
         }
         for (int i = 0; i < tokens.size(); i++){
-            if (!Arrays.asList("\\", ".", "(", ")", "λ").contains(tokens.get(i))){
+            if (!Arrays.asList("\\", ".", "(", ")", "λ", " ").contains(tokens.get(i))){
                 makeWord(tokens, i);
             }
         }
+
         return tokens;
     }
 
     public static void makeWord(ArrayList<String> tokens, int i){
         if (i < tokens.size() - 1 && !Arrays.asList("\\", ".", "(", ")", "λ", " ").contains(tokens.get(i + 1))){
-            tokens.add(i, tokens.get(i) + tokens.get(i + 1));
-            tokens.remove(i + 1);
+            tokens.set(i, tokens.get(i) + tokens.get(i + 1));
             tokens.remove(i + 1);
             makeWord(tokens, i);
         }
@@ -50,8 +51,13 @@ public class LambdaLab {
 
     public static ArrayList<Expression> makeVars (ArrayList<String> tokens){
         ArrayList<Expression> ret = new ArrayList<>();
-        for (String token: tokens) {
-                ret.add(new Variable(token));
+        for (int i = 0; i < tokens.size(); i++) {
+            while (i < tokens.size() && tokens.get(i).equals(" ")){
+                tokens.remove(i);
+            }
+            if (i < tokens.size()) {
+                ret.add(new Variable(tokens.get(i)));
+            }
         }
         return ret;
     }
