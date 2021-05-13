@@ -14,6 +14,7 @@ public class LambdaLab {
                 input = input.substring(0, input.indexOf(";"));
             }
             ArrayList<Expression> tokens = makeVars(tokenize(input));
+            //implement parens next
             while (tokens.size() > 1) {
                 tokens.set(0, new Application(tokens.get(0), tokens.get(1)));
                 tokens.remove(1);
