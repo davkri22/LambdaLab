@@ -14,7 +14,7 @@ public class LambdaLab {
                 input = input.substring(0, input.indexOf(";"));
             }
             ArrayList<Expression> tokens = makeVars(tokenize(input));
-            //implement parens next
+            removeParens(tokens);
             while (tokens.size() > 1) {
                 tokens.set(0, new Application(tokens.get(0), tokens.get(1)));
                 tokens.remove(1);
@@ -60,5 +60,22 @@ public class LambdaLab {
             }
         }
         return ret;
+    }
+
+    public static void removeParens(ArrayList<Expression> tokens){
+        for (int i = 0; i < tokens.size(); i++){
+            if (tokens.get(i).toString().equals("(")){
+                tokens.set(i, new Application(tokens.get(i + 1), tokens.get(i + 2)));
+                tokens.remove(i + 1);
+                tokens.remove(i + 1);
+                while (!tokens.get(i + 1).toString().equals(")")) {
+                    tokens.set(i, new Application(tokens.get(i), tokens.get(i + 1)));
+                    tokens.remove(i + 1);
+                }
+            }
+            else if (tokens.get(i).toString().equals(")")){
+                tokens.remove(i);
+            }
+        }
     }
 }
