@@ -27,9 +27,8 @@ public class LambdaLab {
     }
 
     public static ArrayList<String> tokenize(String input){
-        char[] temp = input.toCharArray();
         ArrayList<String> tokens = new ArrayList<>();
-        for (char c: temp) {
+        for (char c: input.toCharArray()) {
             tokens.add(Character.toString(c));
         }
         for (int i = 0; i < tokens.size(); i++){
