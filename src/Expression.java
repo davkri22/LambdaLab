@@ -21,6 +21,10 @@ class Function extends Expression{
         this.var = var;
         this.exp = exp;
     }
+
+    public String toString() {
+        return "(λ" + var.toString() + "." + exp.toString() + ")";
+    }
 }
 
 class Application extends Expression{
