@@ -26,23 +26,26 @@ public class LambdaLab {
     }
 
     public static ArrayList<String> tokenize(String input){
-        char[] chars = input.toCharArray();
-        ArrayList<String> ret = new ArrayList<>();
-        StringBuilder varWord = new StringBuilder();
-        for (int i = 0; i < chars.length; i++){
-            if (Arrays.asList('\\', '.', '(', ')', ' ').contains(chars[i])){
-                ret.add(Character.toString(chars[i]));
-            }
-            else{
-                while(i < chars.length && !(Arrays.asList('\\', '.', '(', ')', ' ').contains(chars[i]))){
-                    varWord.append(chars[i]);
-                    i++;
-                }
-            }
-            ret.add(varWord.toString());
-            varWord = new StringBuilder();
+        char[] temp = input.toCharArray();
+        ArrayList<String> tokens = new ArrayList<>();
+        for (char c: temp) {
+            tokens.add(Character.toString(c));
         }
-        return ret;
+        for (int i = 0; i < tokens.size(); i++){
+            if (!Arrays.asList("\\", ".", "(", ")", "λ").contains(tokens.get(i))){
+                makeWord(tokens, i);
+            }
+        }
+        return tokens;
+    }
+
+    public static void makeWord(ArrayList<String> tokens, int i){
+        if (i < tokens.size() - 1 && !Arrays.asList("\\", ".", "(", ")", "λ", " ").contains(tokens.get(i + 1))){
+            tokens.add(i, tokens.get(i) + tokens.get(i + 1));
+            tokens.remove(i + 1);
+            tokens.remove(i + 1);
+            makeWord(tokens, i);
+        }
     }
 
     public static ArrayList<Expression> makeVars (ArrayList<String> tokens){
