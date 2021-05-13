@@ -74,7 +74,7 @@ public class LambdaLab {
                 }
             }
             else if (tokens.get(i).toString().equals(")")){
-                tokens.remove(i);
+                tokens.remove(i--);
             }
         }
     }
