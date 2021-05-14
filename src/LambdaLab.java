@@ -19,21 +19,26 @@ public class LambdaLab {
                     System.out.println(dict.get(input));
                 }
 
-                else if (input.contains("=")) {
-                    String var = input.substring(0, input.indexOf(" "));
-                    ArrayList<Expression> tokens = makeVars(tokenize(input.substring(input.indexOf("= ") + 1)));
+                if (input.contains(";")) {
+                    input = input.substring(0, input.indexOf(";"));
+                }
+
+                if (input.contains("=")) {
+                    String var = input.substring(0, input.indexOf("=")).replaceAll(" ", "");
+                    ArrayList<Expression> tokens = makeVars(tokenize(input.substring(input.indexOf("=") + 1)));
                     removeParens(tokens);
                     makeFunc(tokens);
                     reduce(tokens);
 
-                    dict.put(var, tokens.get(0));
-
-                    System.out.println ("Added " + var + " as " + dict.get(var));
+                    if (dict.containsKey(var)) {
+                        System.out.println("Key is already defined");
+                    }
+                    else {
+                        dict.put(var, tokens.get(0));
+                        System.out.println("Added " + var + " as " + dict.get(var));
+                    }
                 }
                 else {
-                    if (input.contains(";")) {
-                        input = input.substring(0, input.indexOf(";"));
-                    }
                     ArrayList<Expression> tokens = makeVars(tokenize(input));
                     removeParens(tokens);
                     makeFunc(tokens);
@@ -89,12 +94,28 @@ public class LambdaLab {
         return ret;
     }
 
-    public static void removeParens(ArrayList<Expression> tokens){
+    public static ArrayList<Expression> removeParens(ArrayList<Expression> tokens){
         for (int i = 0; i < tokens.size(); i++){
             if (tokens.get(i).toString().equals("(")){
                 if (tokens.get(i + 1).toString().equals("\\") || tokens.get(i + 1).toString().equals("λ")){
                     while (!tokens.get(i + 1).toString().equals(")")){
+                        if (tokens.get(i + 1).toString().equals("(")) {
+                            ArrayList<Expression> nestedExp = new ArrayList<>();
+                            int end = i + 1;
+                            while (end < tokens.size() && !tokens.get(end).toString().equals(")")) {
+                                end++;
+                            }
+                            for (int j = i + 2; j < end; j++) {
+                                nestedExp.add(tokens.get(i + 2));
+                                tokens.remove(i + 2);
+                            }
+                            tokens.set(i + 1, makeFunc(nestedExp));
+                            tokens.remove(i + 2);
+                        }
                         i++;
+                    }
+                    while (i < tokens.size() - 2 && tokens.get(i + 2).toString().equals(")")){
+                        tokens.remove(i + 2);
                     }
                     break;
                 }
@@ -120,6 +141,7 @@ public class LambdaLab {
                 tokens.remove(i--);
             }
         }
+        return tokens;
     }
 
     public static void reduce(ArrayList<Expression> tokens){
@@ -131,47 +153,51 @@ public class LambdaLab {
 
     public static Expression makeFunc(ArrayList<Expression> tokens){
         Expression lambdaExp = null;
-        for (int i = 0; i < tokens.size(); i++) {
+        for (int i = 1; i < tokens.size(); i++) {
             if (tokens.get(i).toString().equals(".")) {
-                lambdaExp = tokens.get(i + 1);
-                tokens.remove(i);
-                while (i < tokens.size() - 1 && !tokens.get(i + 1).toString().equals(")") &&
+                while (i < tokens.size() - 1 && !tokens.get(i + 1).toString().equals("(") &&
                         !tokens.get(i + 1).toString().equals("\\") && !tokens.get(i + 1).toString().equals("λ")) {
-                    lambdaExp = new Application(lambdaExp, tokens.get(i + 1));
+                    if (lambdaExp == null)
+                        lambdaExp = tokens.get(i + 1);
+                    else
+                        lambdaExp = new Application(lambdaExp, tokens.get(i + 1));
                     tokens.remove(i + 1);
                 }
+                tokens.remove(i);
             }
             if (i >= tokens.size() - 1){
                 break;
             }
-            if (tokens.get(i).toString().equals("(")){
+            if (tokens.get(i - 1).toString().equals("(")){
                 ArrayList<Expression> nextLambda = new ArrayList<>();
                 int end = 0;
                 while (end < tokens.size() && !tokens.get(end).toString().equals(")")){
                     end++;
                 }
-                for (int j = i + 1; j < end; j++) {
-                    nextLambda.add(tokens.get(i + 1));
-                    tokens.remove(i + 1);
+                for (int j = i; j < end; j++) {
+                    nextLambda.add(tokens.get(i));
+                    tokens.remove(i);
                 }
-                tokens.set(i, makeFunc(nextLambda));
-                tokens.remove(i + 1);
+                tokens.set(i - 1, makeFunc(nextLambda));
+                tokens.remove(i);
             }
-            else if (tokens.get(i + 1).toString().equals("\\") || tokens.get(i + 1).toString().equals("λ")){
+            else if (tokens.get(i).toString().equals("\\") || tokens.get(i).toString().equals("λ")){
                 ArrayList<Expression> nextLambda = new ArrayList<>();
                 int target = tokens.size();
-                for (int j = i + 1; j < target; j++) {
-                    nextLambda.add(tokens.get(i + 1));
-                    tokens.remove(i + 1);
+                for (int j = i; j < target; j++) {
+                    nextLambda.add(tokens.get(i));
+                    tokens.remove(i);
                 }
-                lambdaExp = new Application(lambdaExp, makeFunc(nextLambda));
+                if (lambdaExp == null)
+                    lambdaExp = makeFunc(nextLambda);
+                else
+                    lambdaExp = new Application(lambdaExp, makeFunc(nextLambda));
                 break;
             }
         }
         for (int i = 0; i < tokens.size(); i++){
             if (tokens.get(i).toString().equals("\\") || tokens.get(i).toString().equals("λ")){
                 tokens.set(i, new Function((Variable)tokens.get(i + 1), lambdaExp));
-                tokens.remove(i + 1);
                 tokens.remove(i + 1);
             }
         }
