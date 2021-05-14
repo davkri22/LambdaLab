@@ -94,7 +94,7 @@ public class LambdaLab {
         return ret;
     }
 
-    public static ArrayList<Expression> removeParens(ArrayList<Expression> tokens){
+    public static void removeParens(ArrayList<Expression> tokens){
         for (int i = 0; i < tokens.size(); i++){
             if (tokens.get(i).toString().equals("(")){
                 if (tokens.get(i + 1).toString().equals("\\") || tokens.get(i + 1).toString().equals("λ")){
@@ -141,7 +141,6 @@ public class LambdaLab {
                 tokens.remove(i--);
             }
         }
-        return tokens;
     }
 
     public static void reduce(ArrayList<Expression> tokens){
