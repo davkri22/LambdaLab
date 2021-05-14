@@ -10,15 +10,17 @@ public class LambdaLab {
         String input = in.nextLine().replaceAll("\uFEFF", "");
 
         while(!input.equals("exit")){
-            if (input.contains(";")){
-                input = input.substring(0, input.indexOf(";"));
+            if (!input.equals("")) {
+                if (input.contains(";")) {
+                    input = input.substring(0, input.indexOf(";"));
+                }
+                ArrayList<Expression> tokens = makeVars(tokenize(input));
+                removeParens(tokens);
+                makeFunc(tokens);
+                reduce(tokens);
+                if (tokens.size() > 0)
+                    System.out.println(tokens.get(0));
             }
-            ArrayList<Expression> tokens = makeVars(tokenize(input));
-            removeParens(tokens);
-            makeFunc(tokens);
-            reduce(tokens);
-            if (tokens.size() > 0)
-                System.out.println(tokens.get(0));
             System.out.print(">");
             input = in.nextLine().replaceAll("\uFEFF", "");
         }
@@ -148,6 +150,9 @@ public class LambdaLab {
             }
         }
         reduce(tokens);
+        if (tokens.size() == 0){
+            return null;
+        }
         return tokens.get(0);
     }
 }
