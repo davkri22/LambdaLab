@@ -7,7 +7,7 @@ public class LambdaLab {
         System.out.print(">");
         String input = in.nextLine().replaceAll("\uFEFF", "");
 
-        Hashtable<String, ArrayList<Expression> > dict = new Hashtable<>();
+        Hashtable<String, Expression > dict = new Hashtable<>();
 
         while(!input.equals("exit")){
             if (!input.equals("")) {
@@ -23,11 +23,9 @@ public class LambdaLab {
                     makeFunc(tokens);
                     reduce(tokens);
 
-                    dict.put(var, tokens);
+                    dict.put(var, tokens.get(0));
 
-                    System.out.print("Added " + var + " as ");
-                    if (dict.get(var).size() > 0)
-                        System.out.println(dict.get(var).get(0));
+                    System.out.println ("Added " + var + " as " + dict.get(var));
                 }
                 else {
                     if (input.contains(";")) {
