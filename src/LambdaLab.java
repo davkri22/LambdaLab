@@ -107,9 +107,9 @@ public class LambdaLab {
         for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).toString().equals(".")) {
                 lambdaExp = tokens.get(i + 1);
-                tokens.remove(i--);
-                i++;
-                while (i < tokens.size() - 1 && !tokens.get(i + 1).toString().equals(")") && !tokens.get(i + 1).toString().equals("\\") && !tokens.get(i + 1).toString().equals("λ")) {
+                tokens.remove(i);
+                while (i < tokens.size() - 1 && !tokens.get(i + 1).toString().equals(")") &&
+                        !tokens.get(i + 1).toString().equals("\\") && !tokens.get(i + 1).toString().equals("λ")) {
                     lambdaExp = new Application(lambdaExp, tokens.get(i + 1));
                     tokens.remove(i + 1);
                 }
