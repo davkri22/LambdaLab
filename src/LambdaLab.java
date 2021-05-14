@@ -107,9 +107,9 @@ public class LambdaLab {
         for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).toString().equals(".")) {
                 lambdaExp = tokens.get(i + 1);
-                tokens.remove(i--);
-                i++;
-                while (i < tokens.size() - 1 && !tokens.get(i + 1).toString().equals(")") && !tokens.get(i + 1).toString().equals("\\") && !tokens.get(i + 1).toString().equals("λ")) {
+                tokens.remove(i);
+                while (i < tokens.size() - 1 && !tokens.get(i + 1).toString().equals(")") &&
+                        !tokens.get(i + 1).toString().equals("\\") && !tokens.get(i + 1).toString().equals("λ")) {
                     lambdaExp = new Application(lambdaExp, tokens.get(i + 1));
                     tokens.remove(i + 1);
                 }
@@ -123,13 +123,12 @@ public class LambdaLab {
                 while (end < tokens.size() && !tokens.get(end).toString().equals(")")){
                     end++;
                 }
-                for (int j = 1; j < end; j++) {
-                    nextLambda.add(tokens.get(1));
-                    tokens.remove(1);
+                for (int j = i + 1; j < end; j++) {
+                    nextLambda.add(tokens.get(i + 1));
+                    tokens.remove(i + 1);
                 }
-                tokens.set(0, makeFunc(nextLambda));
-                tokens.remove(1);
-                break;
+                tokens.set(i, makeFunc(nextLambda));
+                tokens.remove(i + 1);
             }
             else if (tokens.get(i + 1).toString().equals("\\") || tokens.get(i + 1).toString().equals("λ")){
                 ArrayList<Expression> nextLambda = new ArrayList<>();
