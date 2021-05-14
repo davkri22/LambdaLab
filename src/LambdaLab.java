@@ -1,13 +1,16 @@
 import java.util.*;
 
 public class LambdaLab {
+
+    static Hashtable<String, Expression > dict = new Hashtable<>();
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
         System.out.print(">");
         String input = in.nextLine().replaceAll("\uFEFF", "");
 
-        Hashtable<String, Expression > dict = new Hashtable<>();
+
 
         while(!input.equals("exit")){
             if (!input.equals("")) {
@@ -45,19 +48,25 @@ public class LambdaLab {
         System.out.println("Goodbye!");
     }
 
-    public static ArrayList<String> tokenize(String input){
+    public static ArrayList<String> tokenize(String input) {
         ArrayList<String> tokens = new ArrayList<>();
-        for (char c: input.toCharArray()) {
+        for (char c : input.toCharArray()) {
             tokens.add(Character.toString(c));
         }
-        for (int i = 0; i < tokens.size(); i++){
-            if (!Arrays.asList("\\", ".", "(", ")", "λ", " ").contains(tokens.get(i))){
+        for (int i = 0; i < tokens.size(); i++) {
+            if (!Arrays.asList("\\", ".", "(", ")", "λ", " ").contains(tokens.get(i))) {
                 makeWord(tokens, i);
             }
         }
+        for (int i = 0; i < tokens.size(); i++) {
+            if (!(dict.get(tokens.get(i)) == null)) {
+                tokens.set(i, (dict.get(tokens.get(i))).toString());
+            }
+        }
 
-        return tokens;
+            return tokens;
     }
+
 
     public static void makeWord(ArrayList<String> tokens, int i){
         if (i < tokens.size() - 1 && !Arrays.asList("\\", ".", "(", ")", "λ", " ").contains(tokens.get(i + 1))){
