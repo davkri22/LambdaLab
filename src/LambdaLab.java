@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class LambdaLab {
     public static void main(String[] args) {
@@ -9,17 +7,39 @@ public class LambdaLab {
         System.out.print(">");
         String input = in.nextLine().replaceAll("\uFEFF", "");
 
+        Hashtable<String, ArrayList<Expression> > dict = new Hashtable<>();
+
         while(!input.equals("exit")){
             if (!input.equals("")) {
-                if (input.contains(";")) {
-                    input = input.substring(0, input.indexOf(";"));
+
+                if(!(dict.get(input) == null)) {
+                    System.out.println(dict.get(input));
                 }
-                ArrayList<Expression> tokens = makeVars(tokenize(input));
-                removeParens(tokens);
-                makeFunc(tokens);
-                reduce(tokens);
-                if (tokens.size() > 0)
-                    System.out.println(tokens.get(0));
+
+                else if (input.contains("=")) {
+                    String var = input.substring(0, input.indexOf(" "));
+                    ArrayList<Expression> tokens = makeVars(tokenize(input.substring(input.indexOf("= ") + 1)));
+                    removeParens(tokens);
+                    makeFunc(tokens);
+                    reduce(tokens);
+
+                    dict.put(var, tokens);
+
+                    System.out.print("Added " + var + " as ");
+                    if (dict.get(var).size() > 0)
+                        System.out.println(dict.get(var).get(0));
+                }
+                else {
+                    if (input.contains(";")) {
+                        input = input.substring(0, input.indexOf(";"));
+                    }
+                    ArrayList<Expression> tokens = makeVars(tokenize(input));
+                    removeParens(tokens);
+                    makeFunc(tokens);
+                    reduce(tokens);
+                    if (tokens.size() > 0)
+                        System.out.println(tokens.get(0));
+                }
             }
             System.out.print(">");
             input = in.nextLine().replaceAll("\uFEFF", "");

@@ -27,7 +27,7 @@ class Function extends Expression{
     }
 }
 
-class Application extends Expression{
+class Application extends Expression {
     Expression lExp;
     Expression rExp;
 
