@@ -11,13 +11,8 @@ public class LambdaLab {
         String input = in.nextLine().replaceAll("\uFEFF", "");
 
 
-
         while(!input.equals("exit")){
             if (!input.equals("")) {
-
-                if(!(dict.get(input) == null)) {
-                    System.out.println(dict.get(input));
-                }
 
                 if (input.contains(";")) {
                     input = input.substring(0, input.indexOf(";"));
