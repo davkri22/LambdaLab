@@ -7,7 +7,7 @@ public class LambdaLab {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
-        System.out.print(">");
+        System.out.print("> ");
         String input = in.nextLine().replaceAll("\uFEFF", "");
 
 
@@ -22,8 +22,6 @@ public class LambdaLab {
                     String var = input.substring(0, input.indexOf("=")).replaceAll(" ", "");
                     ArrayList<Expression> tokens = makeVars(tokenize(input.substring(input.indexOf("=") + 1)));
                     removeParens(tokens);
-                    makeFunc(tokens);
-                    reduce(tokens);
 
                     if (dict.containsKey(var)) {
                         System.out.println("Key is already defined");
@@ -36,13 +34,11 @@ public class LambdaLab {
                 else {
                     ArrayList<Expression> tokens = makeVars(tokenize(input));
                     removeParens(tokens);
-                    makeFunc(tokens);
-                    reduce(tokens);
                     if (tokens.size() > 0)
                         System.out.println(tokens.get(0));
                 }
             }
-            System.out.print(">");
+            System.out.print("> ");
             input = in.nextLine().replaceAll("\uFEFF", "");
         }
         System.out.println("Goodbye!");
@@ -90,52 +86,36 @@ public class LambdaLab {
     }
 
     public static void removeParens(ArrayList<Expression> tokens){
-        for (int i = 0; i < tokens.size(); i++){
+        ArrayList<Expression> parenExp = new ArrayList<>();
+        Stack<Expression> parenStack = new Stack<>();
+        Variable placeholder = new Variable("start");
+        for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).toString().equals("(")){
-                if (tokens.get(i + 1).toString().equals("\\") || tokens.get(i + 1).toString().equals("λ")){
-                    while (!tokens.get(i + 1).toString().equals(")")){
-                        if (tokens.get(i + 1).toString().equals("(")) {
-                            ArrayList<Expression> nestedExp = new ArrayList<>();
-                            int end = i + 1;
-                            while (end < tokens.size() && !tokens.get(end).toString().equals(")")) {
-                                end++;
-                            }
-                            for (int j = i + 2; j < end; j++) {
-                                nestedExp.add(tokens.get(i + 2));
-                                tokens.remove(i + 2);
-                            }
-                            tokens.set(i + 1, makeFunc(nestedExp));
-                            tokens.remove(i + 2);
+                parenStack.push(tokens.get(i));
+                tokens.remove(i++);
+                tokens.add(i - 1, placeholder);
+                while (true){
+                    if (tokens.get(i).toString().equals(")")) {
+                        parenStack.pop();
+                        if (parenStack.size() == 0){
+                            tokens.remove(i);
+                            break;
                         }
-                        i++;
                     }
-                    while (i < tokens.size() - 2 && tokens.get(i + 2).toString().equals(")")){
-                        tokens.remove(i + 2);
-                    }
-                    break;
+                    else if (tokens.get(i).toString().equals("("))
+                        parenStack.push(tokens.get(i));
+                    parenExp.add(tokens.get(i));
+                    tokens.remove(i);
                 }
-                if (!tokens.get(i + 1).toString().equals("(") && !tokens.get(i + 1).toString().equals(")") &&
-                        !tokens.get(i + 2).toString().equals("(") && !tokens.get(i + 2).toString().equals(")")) {
-                    tokens.set(i, new Application(tokens.get(i + 1), tokens.get(i + 2)));
-                    tokens.remove(i + 1);
-                    tokens.remove(i + 1);
-                    while (!tokens.get(i + 1).toString().equals(")")) {
-                        tokens.set(i, new Application(tokens.get(i), tokens.get(i + 1)));
-                        tokens.remove(i + 1);
-                    }
+                removeParens(parenExp);
+                for (int j = 0; j < parenExp.size(); j++) {
+                    tokens.add(tokens.indexOf(placeholder), parenExp.get(0));
+                    parenExp.remove(0);
                 }
-                else if (!tokens.get(i + 1).toString().equals("(") && !tokens.get(i + 1).toString().equals(")")){
-                    tokens.set(i, tokens.get(i + 1));
-                    tokens.remove(i + 1);
-
-                }
-                else
-                    tokens.remove(i--);
-            }
-            else if (tokens.get(i).toString().equals(")")){
-                tokens.remove(i--);
+                tokens.remove(placeholder);
             }
         }
+        makeFunc(tokens);
     }
 
     public static void reduce(ArrayList<Expression> tokens){
