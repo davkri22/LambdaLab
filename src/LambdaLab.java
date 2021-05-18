@@ -60,13 +60,9 @@ public class LambdaLab {
                 makeWord(tokens, i);
             }
         }
-        for (int i = 0; i < tokens.size(); i++) {
-            if (!(dict.get(tokens.get(i)) == null)) {
-                tokens.set(i, (dict.get(tokens.get(i))).toString());
-            }
-        }
         return tokens;
     }
+
 
 
     public static void makeWord(ArrayList<String> tokens, int i){
@@ -85,6 +81,11 @@ public class LambdaLab {
             }
             if (i < tokens.size()) {
                 ret.add(new Variable(tokens.get(i)));
+            }
+        }
+        for (int i = 0; i < tokens.size(); i++) {
+            if (!(dict.get(tokens.get(i)) == null)) {
+                ret.set(i, (dict.get(tokens.get(i))));
             }
         }
         return ret;
