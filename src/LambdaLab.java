@@ -12,7 +12,7 @@ public class LambdaLab {
 
 
         while(!input.equals("exit")){
-            ArrayList<Expression> tokens = null;
+            ArrayList<Expression> tokens;
             if (!input.equals("")) {
 
                 if (input.contains(";")) {
@@ -152,7 +152,7 @@ public class LambdaLab {
                         lambdaExp = new Application(lambdaExp, tokens.get(i + 1));
                     tokens.remove(i + 1);
                 }
-                tokens.remove(i);
+                tokens.remove(i--);
             }
             if (i >= tokens.size() - 1){
                 break;
