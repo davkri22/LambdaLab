@@ -1,5 +1,9 @@
+import java.util.ArrayList;
+
 public abstract class Expression {
     public abstract void swap(Variable replace, Expression exp);
+
+    public abstract void addVars(ArrayList<Variable> list);
 }
 
 class Variable extends Expression{
@@ -9,14 +13,18 @@ class Variable extends Expression{
         this.name = name;
     }
 
-    public String toString(){
-        return this.name;
-    }
-
     public void swap(Variable replace, Expression exp) {
         if (exp.getClass() == Variable.class){
             this.name = ((Variable) exp).name;
         }
+    }
+
+    public void addVars(ArrayList<Variable> list){
+        list.add(this);
+    }
+
+    public String toString(){
+        return this.name;
     }
 }
 
@@ -30,11 +38,30 @@ class Function extends Expression{
     }
 
     public Expression run(Expression exp){
+        ArrayList<Variable> boundVars = new ArrayList<>();
+        ArrayList<Variable> freeVars = new ArrayList<>();
+        ArrayList<String> freeVarStrings = new ArrayList<>();
+        boundVars.add(this.var);
+        this.exp.addVars(boundVars);
+        exp.addVars(freeVars);
+        for (Variable var: freeVars) {
+            freeVarStrings.add(var.toString());
+        }
+        for (Variable var: boundVars) {
+            if(freeVarStrings.contains(var.toString()))
+            var.name += "1";
+        }
         this.exp.swap(this.var, exp);
         return this.exp;
     }
 
     public void swap(Variable replace, Expression exp){
+        this.exp.swap(replace, exp); //This line fixes alpha reduction but breaks bound vars
+    }
+
+    public void addVars(ArrayList<Variable> list){
+        list.add(this.var);
+        this.exp.addVars(list);
     }
 
     public String toString() {
@@ -62,6 +89,11 @@ class Application extends Expression {
             this.lExp.swap(replace, exp);
             this.rExp.swap(replace, exp);
         }
+    }
+
+    public void addVars(ArrayList<Variable> list){
+        lExp.addVars(list);
+        rExp.addVars(list);
     }
 
     public String toString() {
