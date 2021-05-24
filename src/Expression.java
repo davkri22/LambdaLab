@@ -30,17 +30,11 @@ class Function extends Expression{
     }
 
     public Expression run(Expression exp){
-        if (this.exp.toString().equals(this.var.toString())){
-            this.exp = exp;
-        }
-        else{
-            this.exp.swap(this.var, exp);
-        }
+        this.exp.swap(this.var, exp);
         return this.exp;
     }
 
     public void swap(Variable replace, Expression exp){
-        this.exp.swap(replace, exp);
     }
 
     public String toString() {
