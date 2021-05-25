@@ -29,17 +29,28 @@ public class LambdaLab {
                     }
                     else if (tokens.get(0).toString().equals("run")) {
                         tokens.remove(0);
-                        runApp(tokens);
+                        if (tokens.get(0).getClass() == Application.class) {
+                            Application app = (Application) tokens.get(0);
+                            tokens.set(0, runApp(app));
+                        }
                     }
                     dict.put(var, tokens.get(0));
                     System.out.println("Added " + dict.get(var) + " as " + var);
                 }
                 else {
                     tokens = makeVars(tokenize(input));
+                    if (tokens.size() == 0){
+                        System.out.print("> ");
+                        input = in.nextLine().replaceAll("\uFEFF", "");
+                        continue;
+                    }
                     removeParens(tokens);
                     if (tokens.get(0).toString().equals("run")){
                         tokens.remove(0);
-                        runApp(tokens);
+                        if (tokens.get(0).getClass() == Application.class) {
+                            Application app = (Application) tokens.get(0);
+                            tokens.set(0, runApp(app));
+                        }
                     }
                     System.out.println(tokens.get(0));
                 }
@@ -185,14 +196,16 @@ public class LambdaLab {
         return tokens.get(0);
     }
 
-    public static void runApp(ArrayList<Expression> tokens){
-        if (tokens.get(0).getClass() == Application.class){
-            Application app = (Application)tokens.get(0);
-            if (app.lExp.getClass() == Function.class){
-                Function func = (Function) app.lExp;
-                tokens.set(0, func.run(app.rExp));
-                runApp(tokens);
-            }
-        }
+    public static Expression runApp(Application app){
+        Expression ret = app;
+        if (app.lExp.getClass() == Application.class)
+            runApp((Application)app.lExp);
+        if (app.rExp.getClass() == Application.class)
+            runApp((Application)app.rExp);
+        if (app.lExp.getClass() == Function.class)
+            ret = ((Function)app.lExp).run(app.rExp);
+        if (ret.getClass() == Application.class)
+            ret = runApp((Application) ret);
+        return ret;
     }
 }

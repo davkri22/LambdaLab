@@ -14,7 +14,7 @@ class Variable extends Expression{
     }
 
     public void swap(Variable replace, Expression exp) {
-        if (exp.getClass() == Variable.class){
+        if (this.toString().equals(replace.toString())){
             this.name = ((Variable) exp).name;
         }
     }
@@ -56,7 +56,9 @@ class Function extends Expression{
     }
 
     public void swap(Variable replace, Expression exp){
-        this.exp.swap(replace, exp); //This line fixes alpha reduction but breaks bound vars
+        if (this.exp.getClass() == Variable.class)
+            return;
+        this.exp.swap(replace, exp);
     }
 
     public void addVars(ArrayList<Variable> list){
