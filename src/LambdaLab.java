@@ -33,10 +33,15 @@ public class LambdaLab {
                             Application app = (Application) tokens.get(0);
                             tokens.set(0, runApp(app));
                         }
+                        dict.put(var, tokens.get(0).deepCopy());
+                        System.out.println("Added " + dict.get(var) + " as " + var);
                     }
 
-                    dict.put(var, tokens.get(0).deepCopy());
-                    System.out.println("Added " + dict.get(var) + " as " + var);
+                    else {
+                        dict.put(var, tokens.get(0).deepCopy());
+                        System.out.println("Added " + dict.get(var) + " as " + var);
+                    }
+
                 }
                 else {
                     tokens = makeVars(tokenize(input));
