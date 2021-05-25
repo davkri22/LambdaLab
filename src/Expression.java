@@ -17,7 +17,7 @@ class Variable extends Expression{
 
     public Expression swap(Variable replace, Expression exp) {
         if (this.toString().equals(replace.toString())){
-            return exp;
+            this.name = exp.toString();
         }
         return this;
     }

@@ -61,7 +61,7 @@ public class LambdaLab {
                             tokens.set(0, runApp(app));
                         }
                     }
-                    runApp(tokens.get(0));
+                    tokens.set(0, runApp(tokens.get(0)));
                     if (vals.contains(tokens.get(0)))
                         System.out.println(vars.get(vals.indexOf(tokens.get(0))));
                     else
