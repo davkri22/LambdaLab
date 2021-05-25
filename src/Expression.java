@@ -58,7 +58,7 @@ class Function extends Expression{
             if(freeVarStrings.contains(var.toString()))
             var.name += "1";
         }
-        this.exp.swap(this.var, exp);
+        this.exp = this.exp.swap(this.var, exp);
         return this.exp;
     }
 
@@ -66,7 +66,7 @@ class Function extends Expression{
         if (this.exp.getClass() == Variable.class)
             return this.exp;
         this.exp = this.exp.swap(replace, exp);
-        return this.exp;
+        return this;
     }
 
     public void addVars(ArrayList<Variable> list){
@@ -95,17 +95,15 @@ class Application extends Expression {
     public Expression swap(Variable replace, Expression exp){
         if (this.lExp.toString().equals(replace.toString())){
             lExp = exp;
-            return lExp;
         }
         else if (this.rExp.toString().equals(replace.toString())){
             rExp = exp;
-            return rExp;
         }
         else {
             this.lExp = this.lExp.swap(replace, exp);
             this.rExp = this.rExp.swap(replace, exp);
-            return this;
         }
+        return this;
     }
 
     public void addVars(ArrayList<Variable> list){
