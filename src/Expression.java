@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public abstract class Expression {
+public abstract class Expression{
     public abstract Expression swap(Variable replace, Expression exp);
 
     public abstract void addVars(ArrayList<Variable> list);
@@ -28,6 +28,11 @@ class Variable extends Expression{
 
     public Variable deepCopy() {
         return new Variable(this.name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this.toString().equals(o.toString());
     }
 
     public String toString(){
@@ -78,6 +83,11 @@ class Function extends Expression{
         return new Function(this.var.deepCopy(), this.exp.deepCopy());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return this.toString().equals(o.toString());
+    }
+
     public String toString() {
         return "(λ" + var.toString() + "." + exp.toString() + ")";
     }
@@ -113,6 +123,11 @@ class Application extends Expression {
 
     public Application deepCopy() {
         return new Application(this.lExp.deepCopy(), this.rExp.deepCopy());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this.toString().equals(o.toString());
     }
 
     public String toString() {

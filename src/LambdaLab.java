@@ -2,7 +2,8 @@ import java.util.*;
 
 public class LambdaLab {
 
-    static Hashtable<String, Expression > dict = new Hashtable<>();
+    static ArrayList<String> vars = new ArrayList<>();
+    static ArrayList<Expression> vals = new ArrayList<>();
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -24,7 +25,7 @@ public class LambdaLab {
                     tokens = makeVars(tokenize(input.substring(input.indexOf("=") + 1)));
                     removeParens(tokens);
 
-                    if (dict.containsKey(var)) {
+                    if (vars.contains(var)) {
                         System.out.println("Key is already defined");
                     }
                     else if (tokens.get(0).toString().equals("run")) {
@@ -33,13 +34,15 @@ public class LambdaLab {
                             Application app = (Application) tokens.get(0);
                             tokens.set(0, runApp(app));
                         }
-                        dict.put(var, tokens.get(0).deepCopy());
-                        System.out.println("Added " + dict.get(var) + " as " + var);
+                        vars.add(var);
+                        vals.add(tokens.get(0).deepCopy());
+                        System.out.println("Added " + vals.get(vars.indexOf(var)) + " as " + var);
                     }
 
                     else {
-                        dict.put(var, tokens.get(0).deepCopy());
-                        System.out.println("Added " + dict.get(var) + " as " + var);
+                        vars.add(var);
+                        vals.add(tokens.get(0).deepCopy());
+                        System.out.println("Added " + vals.get(vars.indexOf(var)) + " as " + var);
                     }
 
                 }
@@ -58,7 +61,11 @@ public class LambdaLab {
                             tokens.set(0, runApp(app));
                         }
                     }
-                    System.out.println(tokens.get(0));
+                    runApp(tokens.get(0));
+                    if (vals.contains(tokens.get(0)))
+                        System.out.println(vars.get(vals.indexOf(tokens.get(0))));
+                    else
+                        System.out.println(tokens.get(0));
                 }
             }
             System.out.print("> ");
@@ -80,8 +87,6 @@ public class LambdaLab {
         return tokens;
     }
 
-
-
     public static void makeWord(ArrayList<String> tokens, int i){
         if (i < tokens.size() - 1 && !Arrays.asList("\\", ".", "(", ")", "λ", " ").contains(tokens.get(i + 1))){
             tokens.set(i, tokens.get(i) + tokens.get(i + 1));
@@ -101,8 +106,8 @@ public class LambdaLab {
             }
         }
         for (int i = 0; i < tokens.size(); i++) {
-            if (!(dict.get(tokens.get(i)) == null)) {
-                ret.set(i, (dict.get(tokens.get(i)).deepCopy()));
+            if (vars.contains(tokens.get(i))) {
+                ret.set(i, (vals.get(vars.indexOf(tokens.get(i))).deepCopy()));
             }
         }
         return ret;
