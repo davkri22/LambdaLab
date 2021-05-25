@@ -34,7 +34,8 @@ public class LambdaLab {
                             tokens.set(0, runApp(app));
                         }
                     }
-                    dict.put(var, tokens.get(0));
+
+                    dict.put(var, tokens.get(0).deepCopy());
                     System.out.println("Added " + dict.get(var) + " as " + var);
                 }
                 else {
@@ -96,7 +97,7 @@ public class LambdaLab {
         }
         for (int i = 0; i < tokens.size(); i++) {
             if (!(dict.get(tokens.get(i)) == null)) {
-                ret.set(i, (dict.get(tokens.get(i))));
+                ret.set(i, (dict.get(tokens.get(i)).deepCopy()));
             }
         }
         return ret;
@@ -196,16 +197,21 @@ public class LambdaLab {
         return tokens.get(0);
     }
 
-    public static Expression runApp(Application app){
-        Expression ret = app;
-        if (app.lExp.getClass() == Application.class)
-            runApp((Application)app.lExp);
-        if (app.rExp.getClass() == Application.class)
-            runApp((Application)app.rExp);
-        if (app.lExp.getClass() == Function.class)
-            ret = ((Function)app.lExp).run(app.rExp);
-        if (ret.getClass() == Application.class)
-            ret = runApp((Application) ret);
+    public static Expression runApp(Expression exp){
+        Expression ret = exp;
+        if (exp.getClass() == Application.class) {
+            if (((Application) exp).lExp.getClass() == Application.class)
+                ((Application) exp).lExp = runApp(((Application) exp).lExp);
+            if (((Application) exp).rExp.getClass() == Application.class)
+                ((Application) exp).rExp = runApp(((Application) exp).rExp);
+            if (((Application) exp).lExp.getClass() == Function.class)
+                ret = ((Function) ((Application) exp).lExp).run(((Application) exp).rExp);
+            if (ret.getClass() == Function.class && ((Function) ret).exp.getClass() == Application.class)
+                ((Function) ret).exp = runApp(((Function) ret).exp);
+        }
+        if (ret.getClass() == Function.class) {
+            ((Function)ret).exp = runApp(((Function)ret).exp);
+        }
         return ret;
     }
 }

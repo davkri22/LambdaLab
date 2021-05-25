@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 
 public abstract class Expression {
-    public abstract void swap(Variable replace, Expression exp);
+    public abstract Expression swap(Variable replace, Expression exp);
 
     public abstract void addVars(ArrayList<Variable> list);
+
+    public abstract Expression deepCopy();
 }
 
 class Variable extends Expression{
@@ -13,14 +15,19 @@ class Variable extends Expression{
         this.name = name;
     }
 
-    public void swap(Variable replace, Expression exp) {
+    public Expression swap(Variable replace, Expression exp) {
         if (this.toString().equals(replace.toString())){
-            this.name = ((Variable) exp).name;
+            return exp;
         }
+        return this;
     }
 
     public void addVars(ArrayList<Variable> list){
         list.add(this);
+    }
+
+    public Variable deepCopy() {
+        return new Variable(this.name);
     }
 
     public String toString(){
@@ -55,15 +62,20 @@ class Function extends Expression{
         return this.exp;
     }
 
-    public void swap(Variable replace, Expression exp){
+    public Expression swap(Variable replace, Expression exp){
         if (this.exp.getClass() == Variable.class)
-            return;
-        this.exp.swap(replace, exp);
+            return this.exp;
+        this.exp = this.exp.swap(replace, exp);
+        return this.exp;
     }
 
     public void addVars(ArrayList<Variable> list){
         list.add(this.var);
         this.exp.addVars(list);
+    }
+
+    public Function deepCopy() {
+        return new Function(this.var.deepCopy(), this.exp.deepCopy());
     }
 
     public String toString() {
@@ -80,22 +92,29 @@ class Application extends Expression {
         this.rExp = rExp;
     }
 
-    public void swap(Variable replace, Expression exp){
+    public Expression swap(Variable replace, Expression exp){
         if (this.lExp.toString().equals(replace.toString())){
             lExp = exp;
+            return lExp;
         }
         else if (this.rExp.toString().equals(replace.toString())){
             rExp = exp;
+            return rExp;
         }
         else {
-            this.lExp.swap(replace, exp);
-            this.rExp.swap(replace, exp);
+            this.lExp = this.lExp.swap(replace, exp);
+            this.rExp = this.rExp.swap(replace, exp);
+            return this;
         }
     }
 
     public void addVars(ArrayList<Variable> list){
         lExp.addVars(list);
         rExp.addVars(list);
+    }
+
+    public Application deepCopy() {
+        return new Application(this.lExp.deepCopy(), this.rExp.deepCopy());
     }
 
     public String toString() {
