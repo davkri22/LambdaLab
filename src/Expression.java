@@ -68,9 +68,8 @@ class Function extends Expression{
     }
 
     public Expression swap(Variable replace, Expression exp){
-        if (this.exp.getClass() == Variable.class)
-            return this.exp;
-        this.exp = this.exp.swap(replace, exp);
+        if (this.exp.getClass() != Variable.class)
+            this.exp = this.exp.swap(replace, exp);
         return this;
     }
 
@@ -106,13 +105,11 @@ class Application extends Expression {
         if (this.lExp.toString().equals(replace.toString())){
             lExp = exp;
         }
-        else if (this.rExp.toString().equals(replace.toString())){
+        if (this.rExp.toString().equals(replace.toString())){
             rExp = exp;
         }
-        else {
-            this.lExp = this.lExp.swap(replace, exp);
-            this.rExp = this.rExp.swap(replace, exp);
-        }
+        this.lExp = this.lExp.swap(replace, exp);
+        this.rExp = this.rExp.swap(replace, exp);
         return this;
     }
 
