@@ -3,13 +3,14 @@ import java.util.ArrayList;
 public abstract class Expression{
     public abstract Expression swap(Variable replace, Expression exp);
 
-    public abstract void addVars(ArrayList<Variable> list);
+    public abstract void addBound(ArrayList<Variable> list);
 
     public abstract Expression deepCopy();
 }
 
 class Variable extends Expression{
     String name;
+    int conversions = 0;
 
     public Variable(String name){
         this.name = name;
@@ -22,7 +23,8 @@ class Variable extends Expression{
         return this;
     }
 
-    public void addVars(ArrayList<Variable> list){
+    public void addBound(ArrayList<Variable> list){
+        if (list.contains(this))
         list.add(this);
     }
 
@@ -33,6 +35,13 @@ class Variable extends Expression{
     @Override
     public boolean equals(Object o) {
         return this.toString().equals(o.toString());
+    }
+
+    public void alpha(){
+        if (conversions++ == 0)
+            name += conversions;
+        else
+            name = name.substring(0, name.length()-1) + conversions;
     }
 
     public String toString(){
@@ -52,16 +61,11 @@ class Function extends Expression{
     public Expression run(Expression exp){
         ArrayList<Variable> boundVars = new ArrayList<>();
         ArrayList<Variable> freeVars = new ArrayList<>();
-        ArrayList<String> freeVarStrings = new ArrayList<>();
-        boundVars.add(this.var);
-        this.exp.addVars(boundVars);
-        exp.addVars(freeVars);
-        for (Variable var: freeVars) {
-            freeVarStrings.add(var.toString());
-        }
+        this.addBound(boundVars);
+        exp.addBound(freeVars);
         for (Variable var: boundVars) {
-            if(freeVarStrings.contains(var.toString()))
-            var.name += "1";
+            if(freeVars.contains(var))
+            var.alpha();
         }
         this.exp = this.exp.swap(this.var, exp);
         return this.exp;
@@ -73,9 +77,9 @@ class Function extends Expression{
         return this;
     }
 
-    public void addVars(ArrayList<Variable> list){
+    public void addBound(ArrayList<Variable> list){
         list.add(this.var);
-        this.exp.addVars(list);
+        this.exp.addBound(list);
     }
 
     public Function deepCopy() {
@@ -113,9 +117,9 @@ class Application extends Expression {
         return this;
     }
 
-    public void addVars(ArrayList<Variable> list){
-        lExp.addVars(list);
-        rExp.addVars(list);
+    public void addBound(ArrayList<Variable> list){
+        lExp.addBound(list);
+        rExp.addBound(list);
     }
 
     public Application deepCopy() {
