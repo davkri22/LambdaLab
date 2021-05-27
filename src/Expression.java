@@ -5,6 +5,8 @@ public abstract class Expression{
 
     public abstract void addBound(ArrayList<Variable> list);
 
+    public abstract void addFree(ArrayList<Variable> list);
+
     public abstract Expression deepCopy();
 }
 
@@ -25,6 +27,10 @@ class Variable extends Expression{
 
     public void addBound(ArrayList<Variable> list){
         if (list.contains(this))
+        list.add(this);
+    }
+
+    public void addFree(ArrayList<Variable> list){
         list.add(this);
     }
 
@@ -62,7 +68,7 @@ class Function extends Expression{
         ArrayList<Variable> boundVars = new ArrayList<>();
         ArrayList<Variable> freeVars = new ArrayList<>();
         this.addBound(boundVars);
-        exp.addBound(freeVars);
+        exp.addFree(freeVars);
         for (Variable var: boundVars) {
             if(freeVars.contains(var))
             var.alpha();
@@ -78,6 +84,11 @@ class Function extends Expression{
     }
 
     public void addBound(ArrayList<Variable> list){
+        list.add(this.var);
+        this.exp.addBound(list);
+    }
+
+    public void addFree(ArrayList<Variable> list){
         list.add(this.var);
         this.exp.addBound(list);
     }
@@ -120,6 +131,11 @@ class Application extends Expression {
     public void addBound(ArrayList<Variable> list){
         lExp.addBound(list);
         rExp.addBound(list);
+    }
+
+    public void addFree(ArrayList<Variable> list){
+        lExp.addFree(list);
+        rExp.addFree(list);
     }
 
     public Application deepCopy() {
