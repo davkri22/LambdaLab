@@ -7,6 +7,8 @@ public abstract class Expression{
 
     public abstract void addFree(ArrayList<Variable> list);
 
+    public abstract void swapVars(ArrayList<Variable> replace, ArrayList<Variable> swap);
+
     public abstract Expression deepCopy();
 }
 
@@ -41,6 +43,15 @@ class Variable extends Expression{
     @Override
     public boolean equals(Object o) {
         return this.toString().equals(o.toString());
+    }
+
+    public void swapVars(ArrayList<Variable> replace, ArrayList<Variable> set){
+        if (this.equals(replace.get(0))) {
+            this.name = set.get(0).name;
+            replace.remove(0);
+            set.remove(0);
+        }
+
     }
 
     public void alpha(){
@@ -101,7 +112,26 @@ class Function extends Expression{
 
     @Override
     public boolean equals(Object o) {
-        return this.toString().equals(o.toString());
+        if (o.getClass() != Function.class)
+            return false;
+        ArrayList<Variable> oldVars = new ArrayList<>();
+        ArrayList<Variable> newVars = new ArrayList<>();
+        Function func = ((Function) o).deepCopy();
+        this.var.addFree(newVars);
+        this.exp.addFree(newVars);
+        func.var.addFree(oldVars);
+        func.exp.addFree(oldVars);
+        func.swapVars(oldVars, newVars);
+        return this.toString().equals(func.toString());
+    }
+
+    public void swapVars(ArrayList<Variable> replace, ArrayList<Variable> set){
+        if (this.var.equals(replace.get(0))) {
+            this.var = set.get(0);
+            replace.remove(0);
+            set.remove(0);
+        }
+        this.exp.swapVars(replace, set);
     }
 
     public String toString() {
@@ -146,7 +176,32 @@ class Application extends Expression {
 
     @Override
     public boolean equals(Object o) {
-        return this.toString().equals(o.toString());
+        if (o.getClass() != Application.class)
+            return false;
+        ArrayList<Variable> oldVars = new ArrayList<>();
+        ArrayList<Variable> newVars = new ArrayList<>();
+        Application app = ((Application) o).deepCopy();
+        this.lExp.addFree(newVars);
+        this.rExp.addFree(newVars);
+        app.lExp.addFree(oldVars);
+        app.rExp.addFree(oldVars);
+        app.swapVars(oldVars, newVars);
+        return this.toString().equals(app.toString());
+    }
+
+    public void swapVars(ArrayList<Variable> replace, ArrayList<Variable> set){
+        if (this.lExp.equals(replace.get(0))) {
+            this.lExp = set.get(0);
+            replace.remove(0);
+            set.remove(0);
+        }
+        if (this.rExp.equals(replace.get(0))) {
+            this.rExp = set.get(0);
+            replace.remove(0);
+            set.remove(0);
+        }
+        this.lExp.swapVars(replace, set);
+        this.rExp.swapVars(replace, set);
     }
 
     public String toString() {
