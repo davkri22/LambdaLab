@@ -7,9 +7,6 @@ public class LambdaLab {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Function t = new Function(new Variable("a"), new Function(new Variable("b"), new Variable("a")));
-        Function t1 = new Function(new Variable("b"), new Function(new Variable("a"), new Variable("b")));
-        System.out.println(t.equals(t1));
 
         System.out.print("> ");
         String input = in.nextLine().replaceAll("\uFEFF", "");
