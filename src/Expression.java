@@ -46,6 +46,8 @@ class Variable extends Expression{
     }
 
     public void swapVars(ArrayList<Variable> replace, ArrayList<Variable> set){
+        if (replace.size() == 0 || set.size() == 0)
+            return;
         if (this.equals(replace.get(0))) {
             this.name = set.get(0).name;
             replace.remove(0);
@@ -126,6 +128,8 @@ class Function extends Expression{
     }
 
     public void swapVars(ArrayList<Variable> replace, ArrayList<Variable> set){
+        if (replace.size() == 0 || set.size() == 0)
+            return;
         if (this.var.equals(replace.get(0))) {
             this.var = set.get(0);
             replace.remove(0);
@@ -190,11 +194,15 @@ class Application extends Expression {
     }
 
     public void swapVars(ArrayList<Variable> replace, ArrayList<Variable> set){
+        if (replace.size() == 0 || set.size() == 0)
+            return;
         if (this.lExp.equals(replace.get(0))) {
             this.lExp = set.get(0);
             replace.remove(0);
             set.remove(0);
         }
+        if (replace.size() == 0 || set.size() == 0)
+            return;
         if (this.rExp.equals(replace.get(0))) {
             this.rExp = set.get(0);
             replace.remove(0);
