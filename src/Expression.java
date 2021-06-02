@@ -21,7 +21,7 @@ class Variable extends Expression{
     }
 
     public Expression swap(Variable replace, Expression exp) {
-        if (this.equals(replace)){
+        if (this.toString().equals(replace.toString())){
             this.name = exp.toString();
         }
         return this;
@@ -86,12 +86,15 @@ class Function extends Expression{
             if(freeVars.contains(var))
             var.alpha();
         }
-        this.exp = this.exp.swap(this.var, exp);
+        if (this.exp.toString().equals(this.var.toString()))
+            this.exp = exp;
+        else
+            this.exp = this.exp.swap(this.var, exp);
         return this.exp;
     }
 
     public Expression swap(Variable replace, Expression exp){
-        if (this.exp.equals(replace)){
+        if (this.exp.toString().equals(replace.toString())){
             this.exp = exp;
         }
         this.exp = this.exp.swap(replace, exp);
@@ -153,10 +156,10 @@ class Application extends Expression {
     }
 
     public Expression swap(Variable replace, Expression exp){
-        if (this.lExp.equals(replace)){
+        if (this.lExp.toString().equals(replace.toString())){
             lExp = exp;
         }
-        if (this.rExp.equals(replace)){
+        if (this.rExp.toString().equals(replace.toString())){
             rExp = exp;
         }
         this.lExp = this.lExp.swap(replace, exp);
