@@ -19,7 +19,6 @@ public class LambdaLab {
                 if (input.contains(";")) {
                     input = input.substring(0, input.indexOf(";"));
                 }
-
                 if (input.contains("=")) {
                     String var = input.substring(0, input.indexOf("=")).replaceAll(" ", "");
                     tokens = makeVars(tokenize(input.substring(input.indexOf("=") + 1)));
@@ -46,6 +45,9 @@ public class LambdaLab {
                     }
 
                 }
+                else if (vars.contains(input)){
+                    System.out.println(vals.get(vars.indexOf(input)));
+                }
                 else {
                     tokens = makeVars(tokenize(input));
                     if (tokens.size() == 0){
@@ -61,12 +63,8 @@ public class LambdaLab {
                             tokens.set(0, runApp(app));
                         }
                     }
-                    tokens.set(0, runApp(tokens.get(0)));
                     if (vals.contains(tokens.get(0)))
                         System.out.println(vars.get(vals.indexOf(tokens.get(0))));
-                    if (vars.contains(tokens.get(0).toString())){
-                        System.out.println(vals.get(vals.indexOf(tokens.get(0))));
-                    }
                     else
                         System.out.println(tokens.get(0));
                 }
