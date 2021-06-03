@@ -60,10 +60,8 @@ public class LambdaLab {
                     if (tokens.get(0).toString().equals("run")){
                         tokens.remove(0);
                         Expression exp = runApp(tokens.get(0));
-                        Expression run2 = runApp(exp).deepCopy();
-                        while (!run2.equals(exp)) {
+                        while (!exp.deepCopy().equals(runApp(exp))) {
                             exp = runApp(exp);
-                            run2 = runApp(run2);
                         }
                         tokens.set(0, exp);
                     }
@@ -215,12 +213,15 @@ public class LambdaLab {
     public static Expression runApp(Expression exp){
         Expression ret = exp;
         if (exp.getClass() == Application.class) {
-            if (((Application) exp).lExp.getClass() == Application.class)
+            if (((Application) exp).lExp.getClass() == Application.class) {
                 ((Application) exp).lExp = runApp(((Application) exp).lExp);
-            if (((Application) exp).rExp.getClass() == Application.class)
+            }
+            if (((Application) exp).rExp.getClass() == Application.class){
                 ((Application) exp).rExp = runApp(((Application) exp).rExp);
-            if (((Application) exp).lExp.getClass() == Function.class)
+            }
+            if (((Application) exp).lExp.getClass() == Function.class) {
                 ret = ((Function) ((Application) exp).lExp).run(((Application) exp).rExp);
+            }
         }
         if (ret.getClass() == Function.class) {
             ((Function)ret).exp = runApp(((Function)ret).exp);
