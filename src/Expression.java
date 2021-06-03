@@ -20,6 +20,11 @@ class Variable extends Expression{
         this.name = name;
     }
 
+    public Variable(String name, int conversions){
+        this.name = name;
+        this.conversions = conversions;
+    }
+
     public Expression swap(Variable replace, Expression exp) {
         if (this.toString().equals(replace.toString())){
             this.name = exp.toString();
@@ -37,7 +42,7 @@ class Variable extends Expression{
     }
 
     public Variable deepCopy() {
-        return new Variable(this.name);
+        return new Variable(this.name, this.conversions);
     }
 
     @Override
@@ -89,7 +94,7 @@ class Function extends Expression{
         if (this.exp.toString().equals(this.var.toString()))
             this.exp = exp;
         else
-            this.exp = this.exp.swap(this.var, exp);
+            this.exp = this.exp.swap(this.var, exp.deepCopy());
         return this.exp;
     }
 
