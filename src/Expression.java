@@ -162,13 +162,17 @@ class Application extends Expression {
 
     public Expression swap(Variable replace, Expression exp){
         if (this.lExp.toString().equals(replace.toString())){
-            lExp = exp;
+            lExp = exp.deepCopy();
+            this.rExp = this.rExp.swap(replace, exp);
         }
         if (this.rExp.toString().equals(replace.toString())){
-            rExp = exp;
+            rExp = exp.deepCopy();
+            this.lExp = this.lExp.swap(replace, exp);
         }
-        this.lExp = this.lExp.swap(replace, exp);
-        this.rExp = this.rExp.swap(replace, exp);
+        else {
+            this.lExp = this.lExp.swap(replace, exp);
+            this.rExp = this.rExp.swap(replace, exp);
+        }
         return this;
     }
 
