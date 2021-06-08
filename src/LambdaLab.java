@@ -15,7 +15,9 @@ public class LambdaLab {
         while(!input.equals("exit")){
             ArrayList<Expression> tokens;
             if (!input.equals("")) {
-
+                if (input.equals("debug")){
+                    System.out.println("Enter in debug mode");
+                }
                 if (input.contains(";")) {
                     input = input.substring(0, input.indexOf(";"));
                 }
@@ -65,7 +67,7 @@ public class LambdaLab {
                         }
                         tokens.set(0, exp);
                     }
-                    if (vals.contains(tokens.get(0)))
+                    if (vals.contains(tokens.get(0).deepCopy()))
                         System.out.println(vars.get(vals.indexOf(tokens.get(0))));
                     else
                         System.out.println(tokens.get(0));
