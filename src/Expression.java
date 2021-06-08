@@ -92,17 +92,20 @@ class Function extends Expression{
             var.alpha();
         }
         if (this.exp.toString().equals(this.var.toString()))
-            this.exp = exp;
+            this.exp = exp.deepCopy();
         else
             this.exp = this.exp.swap(this.var, exp.deepCopy());
         return this.exp;
     }
 
     public Expression swap(Variable replace, Expression exp){
-        if (this.exp.toString().equals(replace.toString())){
-            this.exp = exp;
+        if (this.var.equals(replace)){
+            return this;
         }
-        this.exp = this.exp.swap(replace, exp);
+        if (this.exp instanceof Variable && this.exp.toString().equals(replace.toString()))
+            this.exp = exp;
+        else
+            this.exp = this.exp.swap(replace, exp);
         return this;
     }
 

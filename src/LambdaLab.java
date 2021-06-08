@@ -31,7 +31,7 @@ public class LambdaLab {
                     }
                     else if (tokens.get(0).toString().equals("run")) {
                         tokens.remove(0);
-                        Expression exp = tokens.get(0);
+                        Expression exp = runApp(tokens.get(0));
                         while (!exp.deepCopy().equals(runApp(exp))) {
                             exp = runApp(exp);
                         }
