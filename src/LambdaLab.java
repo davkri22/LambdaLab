@@ -67,10 +67,7 @@ public class LambdaLab {
                         }
                         tokens.set(0, exp);
                     }
-                    if (vals.contains(tokens.get(0).deepCopy()))
-                        System.out.println(vars.get(vals.indexOf(tokens.get(0))));
-                    else
-                        System.out.println(tokens.get(0));
+                    System.out.println(tokens.get(0));
                 }
             }
             System.out.print("> ");
